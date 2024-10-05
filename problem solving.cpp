@@ -21,45 +21,52 @@ using namespace std;
 // Function to split a string into a vector of strings based on a delimiter
 vector<string> split(string target, string delimiter) {
     vector<string> result;  // Vector to store the split strings
-    size_t pos = 0;  // Position of the delimiter in the target string
-    string mes;  // Temporary string to store each split part
+    if (delimiter.empty()) {
+        // If delimiter is empty, return the original message as a single element
+        result.push_back(target);
 
-    // Loop through the target string, finding and processing each delimiter
-    while ((pos = target.find(delimiter)) != string::npos) {
-        // Extract the substring from the start to the delimiter
-        mes = target.substr(0, pos);
+    }else {
+        size_t pos = 0;  // Position of the delimiter in the target string
+        string mes;  // Temporary string to store each split part
 
-        // If the extracted substring is not empty, add it to the result vector
-        if (!mes.empty()) {
-            result.push_back(mes);
+        // Loop through the target string, finding and processing each delimiter
+        while ((pos = target.find(delimiter)) != string::npos) {
+            // Extract the substring from the start to the delimiter
+            mes = target.substr(0, pos);
+
+            // If the extracted substring is not empty, add it to the result vector
+            if (!mes.empty()) {
+                result.push_back(mes);
+            }
+
+            // Erase the processed part (including the delimiter) from the target string
+            target.erase(0, pos + delimiter.length());
         }
 
-        // Erase the processed part (including the delimiter) from the target string
-        target.erase(0, pos + delimiter.length());
-    }
-
-    // Add any remaining part of the target string (after the last delimiter)
-    if (!target.empty()) {
-        result.push_back(target);
-    }
-
-    // Return the vector of split strings
+        // Add any remaining part of the target string (after the last delimiter)
+        if (!target.empty()) {
+            result.push_back(target);
+        }
+    }// Return the vector of split strings
     return result;
+
 }
 
 // problem 6
 // a) Recursive function to print binary representation of a number
-// Class for binary number operations
 class BinaryPrinter {
 public:
-    static void binaryPrint(int n) {
+    static bool binaryPrint(long long n) {
+        if (n < 0) {
+            return false; // Return false for negative numbers
+        }
         // Base case: if n is greater than 1, recursively call binaryPrint with n/2
         if (n > 1) {
             binaryPrint(n / 2);
         }
         // Print the least significant bit (n % 2)
-        // This builds the binary representation from right to left
         cout << n % 2;
+        return true; // Return true for successful printing
     }
 };
 // b) Recursive function to print all binary sequences with a given prefix and k additional digits
@@ -106,39 +113,41 @@ int main() {
                 cin>>problem;
 
                 if (problem == 3) {
-                    string message, delimiter;
-                    cout << "Enter your message:" << endl;
-                    cin.ignore(); // Clear the newline left in the buffer
-                    getline(cin, message);
+                    if (problem == 3) {
+                        string message, delimiter;
+                        cout << "Enter your message: " << endl;
+                        cin.ignore(); // Clear the newline left in the buffer
+                        getline(cin, message);
 
-                    cout << "Enter your delimiter:" << endl;
-                    getline(cin, delimiter);
+                        cout << "Enter your delimiter: " << endl;
+                        getline(cin, delimiter);
 
-                    // Split the message into words
-                    vector<string> words = split(message, delimiter);
+                        // Split the message into words
+                        vector<string> words = split(message, delimiter);
 
-                    // Print the split words
-                    cout << "The split words are:" << endl;
-                    for (const auto& word : words) {
-                        cout << word << endl;
+                        // Print the split words
+                        cout << "The split words are:" << endl;
+                        for (const auto& word : words) {
+                            cout << "'" << word << "' ";
+                        }
+                        cout << endl;
                     }
-
-
                 } else if (problem == 6) {
                     char ab;
                     cout << "What do you want to do?\n a) Print the value of a number as a BINARY number. \n b) Print a sequence of binary numbers.\n Please choose (a or b)" << endl;
                     while (true) {
                         cin >> ab;
                         if (ab == 'a') {
-                            int n;
+                            long long n;
                             cout << "Enter the number:" << endl;
                             cin >> n;
                             // Print the binary representation of the number
-                            cout<< n <<" as a BINARY number is : ";
-                            BinaryPrinter::binaryPrint(n);
+                            cout << n << " as a BINARY number is: ";
+                            if (!BinaryPrinter::binaryPrint(n)) {
+                                cout << "FAIL (Cannot print binary representation of negative numbers)";
+                            }
                             cout << "\n";
                             break;
-
                         }else if (ab == 'b') {
                             string prefix;
                             int k;
