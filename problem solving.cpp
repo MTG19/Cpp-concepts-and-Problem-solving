@@ -18,20 +18,32 @@ using namespace std;
 
 
 // problem 3
+// Function to split a string into a vector of strings based on a delimiter
 vector<string> split(string target, string delimiter) {
-    vector<string> result;
-    size_t pos = 0;
-    string mes;
+    vector<string> result;  // Vector to store the split strings
+    size_t pos = 0;  // Position of the delimiter in the target string
+    string mes;  // Temporary string to store each split part
+
+    // Loop through the target string, finding and processing each delimiter
     while ((pos = target.find(delimiter)) != string::npos) {
+        // Extract the substring from the start to the delimiter
         mes = target.substr(0, pos);
+
+        // If the extracted substring is not empty, add it to the result vector
         if (!mes.empty()) {
             result.push_back(mes);
         }
+
+        // Erase the processed part (including the delimiter) from the target string
         target.erase(0, pos + delimiter.length());
     }
+
+    // Add any remaining part of the target string (after the last delimiter)
     if (!target.empty()) {
         result.push_back(target);
     }
+
+    // Return the vector of split strings
     return result;
 }
 
