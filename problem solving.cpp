@@ -62,7 +62,23 @@ public:
         cout << n % 2;
     }
 };
+// b) Recursive function to print all binary sequences with a given prefix and k additional digits
+class BinarySequencePrinter {
+public:
+    static void numbers(string prefix, int k) {
+        // Base case: if k is 0, print the prefix and return
+        if (k == 0) {
+            cout << prefix << endl;
+            return;
+        }
 
+        // Recursive case: add '0' and '1' to the prefix and recurse with k-1
+        numbers(prefix + "0", k - 1);
+        numbers(prefix + "1", k - 1);
+    }
+};
+
+// problem 9
 
 
 
@@ -124,7 +140,15 @@ int main() {
                             break;
 
                         }else if (ab == 'b') {
-
+                            string prefix;
+                            int k;
+                            cout << "Enter the Binary number : ";
+                            cin >> prefix;
+                            cout << "Enter the number of additional digits : ";
+                            cin >> k;
+                            cout << "The binary sequences are:" << endl;
+                            BinarySequencePrinter::numbers(prefix, k);
+                            break;
 
                         }else {
                             cin.clear();
