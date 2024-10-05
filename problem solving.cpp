@@ -51,7 +51,7 @@ vector<string> split(string target, string delimiter) {
     return result;
 
 }
-
+//________________________________________________________________
 // problem 6
 // a) Recursive function to print binary representation of a number
 class BinaryPrinter {
@@ -69,6 +69,7 @@ public:
         return true; // Return true for successful printing
     }
 };
+//________________________________________________________________
 // b) Recursive function to print all binary sequences with a given prefix and k additional digits
 class BinarySequencePrinter {
 public:
@@ -84,6 +85,28 @@ public:
         numbers(prefix + "1", k - 1);
     }
 };
+// Function to check if the input string is a binary number
+bool isBinary(const string& str) {
+    for (char ch : str) {
+        // Check if each character is either '0' or '1'
+        if (ch != '0' && ch != '1') {
+            return false; // Return false if any character is not binary
+        }
+    }
+    return true; // All characters are binary
+}
+// Function to remove leading zeros from the binary string
+string removeLeadingZeros(const string& str) {
+    // Find the first character that is not '0'
+    size_t firstNonZero = str.find_first_not_of('0');
+    // If all characters are '0', return "0"
+    if (firstNonZero == string::npos) {
+        return "0";
+    }
+    // Return the substring starting from the first non-zero character
+    return str.substr(firstNonZero);
+}
+//________________________________________________________________
 
 // problem 9
 
@@ -156,8 +179,14 @@ int main() {
                             cout << "Enter the number of additional digits : ";
                             cin >> k;
                             cout << "The binary sequences are:" << endl;
-                            BinarySequencePrinter::numbers(prefix, k);
-                            break;
+                            if (!isBinary(prefix)) {
+                                cout << "FAIL (Invalid binary number)";
+                                break;
+                            }else {
+                                BinarySequencePrinter::numbers(removeLeadingZeros(prefix), k);
+                                break;
+                            }
+
 
                         }else {
                             cin.clear();
