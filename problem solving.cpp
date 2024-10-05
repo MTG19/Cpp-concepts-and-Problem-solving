@@ -48,6 +48,23 @@ vector<string> split(string target, string delimiter) {
 }
 
 // problem 6
+// a) Recursive function to print binary representation of a number
+// Class for binary number operations
+class BinaryPrinter {
+public:
+    static void binaryPrint(int n) {
+        // Base case: if n is greater than 1, recursively call binaryPrint with n/2
+        if (n > 1) {
+            binaryPrint(n / 2);
+        }
+        // Print the least significant bit (n % 2)
+        // This builds the binary representation from right to left
+        cout << n % 2;
+    }
+};
+
+
+
 
 
 //____________________
@@ -92,6 +109,29 @@ int main() {
 
 
                 } else if (problem == 6) {
+                    char ab;
+                    cout << "What do you want to do?\n a) Print the value of a number as a BINARY number. \n b) Print a sequence of binary numbers.\n Please choose (a or b)" << endl;
+                    while (true) {
+                        cin >> ab;
+                        if (ab == 'a') {
+                            int n;
+                            cout << "Enter the number:" << endl;
+                            cin >> n;
+                            // Print the binary representation of the number
+                            cout<< n <<" as a BINARY number is : ";
+                            BinaryPrinter::binaryPrint(n);
+                            cout << "\n";
+                            break;
+
+                        }else if (ab == 'b') {
+
+
+                        }else {
+                            cin.clear();
+                            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                            cout << "Please enter a valid choice (a or b): ";
+                        }
+                    }
 
 
 
