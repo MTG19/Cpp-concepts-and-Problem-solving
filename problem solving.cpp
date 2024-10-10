@@ -12,7 +12,10 @@
 #include <algorithm>
 #include <sstream>
 #include <vector>
-
+#include <map>
+#include <fstream>
+#include <filesystem>
+#include <bits/stdc++.h>
 
 using namespace std;
 
@@ -38,11 +41,9 @@ vector<string> split(string target, string delimiter) {
             if (!mes.empty()) {
                 result.push_back(mes);
             }
-
             // Erase the processed part (including the delimiter) from the target string
             target.erase(0, pos + delimiter.length());
         }
-
         // Add any remaining part of the target string (after the last delimiter)
         if (!target.empty()) {
             result.push_back(target);
@@ -79,20 +80,17 @@ public:
             cout << prefix << endl;
             return;
         }
-
         // Recursive case: add '0' and '1' to the prefix and recurse with k-1
         numbers(prefix + "0", k - 1);
         numbers(prefix + "1", k - 1);
-    }
-};
+    }};
 // Function to check if the input string is a binary number
 bool isBinary(const string& str) {
     for (char ch : str) {
         // Check if each character is either '0' or '1'
         if (ch != '0' && ch != '1') {
             return false; // Return false if any character is not binary
-        }
-    }
+        }}
     return true; // All characters are binary
 }
 // Function to remove leading zeros from the binary string
@@ -107,10 +105,9 @@ string removeLeadingZeros(const string& str) {
     return str.substr(firstNonZero);
 }
 //________________________________________________________________
-
 // problem 9
 // Recursive function to manage the teddy bear picnic game
-bool teddyBearPicnic(int bears) {
+bool teddyBear(int bears) {
     // if we have exactly 42 bears, we have reached the goal
     if (bears == 42) {
         cout << "You have reached the goal (42 teddyBears)!\n";
@@ -126,37 +123,114 @@ bool teddyBearPicnic(int bears) {
     // If n is divisible by 5, give back 42 bears
     if (bears % 5 == 0) {
         cout << "Returning 42 bears (divisible by 5)\n";
-        if (teddyBearPicnic(bears - 42)) {
+        if (teddyBear(bears - 42)) {
             return true;
-        }
-    }
+        }}
     // If n is divisible by 3 or 4, give back the product of the last two digits
     if (bears % 3 == 0 || bears % 4 == 0) {
-        int lastDigit = bears % 10;
-        int secondLastDigit = (bears / 10) % 10;
-        int bears_to_return = lastDigit * secondLastDigit;
-        if (bears_to_return==0) { //in case if bears_to_return is zero the program will go endless
-            if (bears % 2 == 0) { //if divisible by 4 dont work then work with even rule
+        int lastDigit = bears % 10; // last digit
+        int secondLastDigit = (bears / 10) % 10; // next-to-last digit
+        int bears_to_return = lastDigit * secondLastDigit; // product of the last two digits
+        if (bears_to_return==0) { // in case if bears_to_return is zero the program will go endless
+            if (bears % 2 == 0) { // if divisible by 4 dont work then work with even rule
                 cout << "Returning " << bears / 2 << " bears (even number)\n";
-                if (teddyBearPicnic(bears - bears / 2)) {
+                if (teddyBear(bears - bears / 2)) {
                     return true;
-                }
-            }
+                }}
         }else{
             cout << "Returning " << bears_to_return << " bears (divisible by 3 or 4)\n";
-            if (teddyBearPicnic(bears - bears_to_return)) {
+            if (teddyBear(bears - bears_to_return)) {
                 return true;
-            }
-        }
-    }
+            }}}
     // If n is even, give back n / 2 bears
     if (bears % 2 == 0) {
         cout << "Returning " << bears / 2 << " bears (even number)\n";
-        if (teddyBearPicnic(bears - bears / 2)) {
+        if (teddyBear(bears - bears / 2)) {
             return true;
         }
     }
     return false; // Indicate failure to reach the goal
+}
+//----------------------------------------------------------------
+// problem 12
+// Function to scan a file for phishing keywords
+void scanForPhishingKeywords(const string& filename) {
+    // Define phishing keywords and their point values
+    map<string, int> phishingWords = {
+        {"urgent", 3},
+        {"verify your account", 3},
+        {"password reset", 2},
+        {"update your information", 2},
+        {"click here", 2},
+        {"bank account", 3},
+        {"credit card", 3},
+        {"login", 2},
+        {"suspicious activity", 3},
+        {"limited time offer", 2},
+        {"congratulations", 2},
+        {"winner", 3},
+        {"account suspended", 3},
+        {"contact support", 2},
+        {"payment information", 3},
+        {"claim your prize", 3},
+        {"customer service", 1},
+        {"request", 1},
+        {"immediate action required", 3},
+        {"security alert", 3},
+        {"click the link", 2},
+        {"unusual login", 3},
+        {"your invoice", 2},
+        {"account verification", 3},
+        {"banking details", 3},
+        {"transaction failed", 3},
+        {"urgent notice", 3},
+        {"software update", 2},
+        {"download now", 2},
+        {"download", 2},
+        {"malware", 2}
+    };
+
+    ifstream file(filename);
+    if (!file.is_open()) {
+        cout << "Failed to open file: " << filename << endl;
+        return;
+    }
+    string line;
+    map<string, int> occurrences;
+    int totalPoints = 0;
+
+    while (getline(file, line)) {
+        for (const auto& [keyword, points] : phishingWords) {
+            size_t pos = 0;
+            int count = 0;
+
+            // Convert line to lower case for case insensitive search
+            string lowerLine = line;
+            transform(lowerLine.begin(), lowerLine.end(), lowerLine.begin(), ::tolower);
+
+            while ((pos = lowerLine.find(keyword, pos)) != string::npos) {
+                count++;
+                pos += keyword.length();
+            }
+
+            if (count > 0) {
+                occurrences[keyword] += count;
+                totalPoints += count * points;
+            }
+        }
+    }
+
+    file.close();
+
+    // Output the results
+    cout << "Phishing keyword occurrences:\n";
+    for (const auto& [keyword, count] : occurrences) {
+        if (count > 0) {
+            cout << keyword << ": " << count << " occurrences, " << count * phishingWords[keyword] << " points\n";
+        }
+    }
+
+    cout << "Total points for the message: " << totalPoints << endl;
 }
 
 
@@ -185,25 +259,24 @@ int main() {
                 cin>>problem;
 
                 if (problem == 3) {
-                    if (problem == 3) {
-                        string message, delimiter;
-                        cout << "Enter your message: " << endl;
-                        cin.ignore(); // Clear the newline left in the buffer
-                        getline(cin, message);
+                    string message, delimiter;
+                    cout << "Enter your message: " << endl;
+                    cin.ignore(); // Clear the newline left in the buffer
+                    getline(cin, message);
 
-                        cout << "Enter your delimiter: " << endl;
-                        getline(cin, delimiter);
+                    cout << "Enter your delimiter: " << endl;
+                    getline(cin, delimiter);
 
-                        // Split the message into words
-                        vector<string> words = split(message, delimiter);
+                    // Split the message into words
+                    vector<string> words = split(message, delimiter);
 
-                        // Print the split words
-                        cout << "The split words are:" << endl;
-                        for (const auto& word : words) {
-                            cout << "'" << word << "' ";
-                        }
-                        cout << endl;
+                    // Print the split words
+                    cout << "The split words are:" << endl;
+                    for (const auto& word : words) {
+                        cout << "'" << word << "' ";
                     }
+                    cout << endl;
+
                 } else if (problem == 6) {
                     char ab;
                     cout << "What do you want to do?\n a) Print the value of a number as a BINARY number. \n b) Print a sequence of binary numbers.\n Please choose (a or b)" << endl;
@@ -246,14 +319,17 @@ int main() {
                     int bears;
                     cout << "Enter the number of teddy bears: ";
                     cin >> bears;
-                    if (!teddyBearPicnic(bears)) {
+                    if (!teddyBear(bears)) {
                         cout << "Can not reach the goal(42) with " << bears << " bears.\n";
                     }
 
-
-
-
                 }else if (problem == 12) {
+                    string filename;
+                    cout << "Enter the full path of the file to scan for phishing keywords: ";
+                    cin.ignore(); // Clear any leftover newline characters
+                    getline(cin, filename);
+
+                    scanForPhishingKeywords(filename);
 
 
 
@@ -284,4 +360,5 @@ int main() {
     }
     return 0;
 }
+
 
