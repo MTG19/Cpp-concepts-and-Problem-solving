@@ -189,47 +189,42 @@ void scanForPhishingKeywords(const string& filename) {
         {"download", 2},
         {"malware", 2}
     };
-
+    // Attempt to open the file
     ifstream file(filename);
     if (!file.is_open()) {
         cout << "Failed to open file: " << filename << endl;
         return;
     }
     string line;
-    map<string, int> occurrences;
-    int totalPoints = 0;
+    map<string, int> occurrences;  // Store keyword occurrences
+    int totalPoints = 0;  // Keep track of total phishing points
 
+    // Read the file line by line
     while (getline(file, line)) {
         for (const auto& [keyword, points] : phishingWords) {
             size_t pos = 0;
             int count = 0;
-
             // Convert line to lower case for case insensitive search
             string lowerLine = line;
             transform(lowerLine.begin(), lowerLine.end(), lowerLine.begin(), ::tolower);
-
+            // Count occurrences of the keyword in the line
             while ((pos = lowerLine.find(keyword, pos)) != string::npos) {
                 count++;
                 pos += keyword.length();
             }
-
+            // If keyword found, update occurrences and total points
             if (count > 0) {
                 occurrences[keyword] += count;
                 totalPoints += count * points;
-            }
-        }
-    }
-
-    file.close();
-
+            }}}
+    file.close();  // Close the file after reading
     // Output the results
     cout << "Phishing keyword occurrences:\n";
     for (const auto& [keyword, count] : occurrences) {
         if (count > 0) {
-            cout << keyword << ": " << count << " occurrences, " << count * phishingWords[keyword] << " points\n";
-        }
-    }
-
+            cout << keyword << ": " << count << " occurrences, "
+                 << count * phishingWords[keyword] << " points\n";
+        }}
     cout << "Total points for the message: " << totalPoints << endl;
 }
 
@@ -325,7 +320,7 @@ int main() {
 
                 }else if (problem == 12) {
                     string filename;
-                    cout << "Enter the full path of the file to scan for phishing keywords: ";
+                    cout << "Enter the full path of the file you want to scan: ";
                     cin.ignore(); // Clear any leftover newline characters
                     getline(cin, filename);
 
